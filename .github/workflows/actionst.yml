@@ -1,4 +1,4 @@
-name: Run Script Every 5 Minutes
+name: run webfetch.py
 
 on:
   schedule:
@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3  # Updated to v3
+        uses: actions/checkout@v4.2.2
 
       - name: Set Up Python
         uses: actions/setup-python@v4  # Updated to v4
         with:
-          python-version: '3.8'  # Specify the Python version
+          python-version: '3.9'  # Specify the Python version
 
       - name: Install Dependencies
         run: |
@@ -24,4 +24,4 @@ jobs:
           pip install -r requirements.txt  # Ensure you have a requirements.txt
 
       - name: Run Script
-        run: python ki_webfetch/webfetch.py  
+        run: python webfetch.py  
