@@ -26,15 +26,13 @@ jobs:
       - name: Run Script
         run: python webfetch.py  
         
-      - name: commit files
+      - name: Configure Git
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main 
+          git config --local user.email "liamjosephnolan@gmail.com"
+          git config --local user.name "liamjosephnolan"
+
+      - name: Commit and Push Changes
+        run: |
+          git add ki_current_capacity_log.csv  
+          git commit -m "Update CSV with new capacity data" || echo "No changes to commit"
+          git push origin master  # Make sure you push to the correct branch
