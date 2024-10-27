@@ -3,7 +3,7 @@ name: Run Script Every 5 Minutes
 on:
   schedule:
     - cron: '*/5 * * * *'  # This cron expression runs the workflow every 5 minutes.
-  workflow_dispatch:  # This allows you to manually trigger the workflow
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   run-script:
@@ -11,17 +11,17 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3
 
       - name: Set Up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to v4
         with:
-          python-version: '3.8'  # Specify the Python version you need
+          python-version: '3.8'  # Specify the Python version
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # If you have dependencies listed in requirements.txt
+          pip install -r requirements.txt  # Ensure you have a requirements.txt
 
       - name: Run Script
-        run: python ki_webfetch/webfetch.py
+        run: python ki_webfetch/webfetch.py  
