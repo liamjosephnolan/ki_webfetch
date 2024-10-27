@@ -2,7 +2,7 @@ name: run webfetch.py
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # This cron expression runs the workflow every 5 minutes.
+    - cron: '*/15 * * * *'  # This cron expression runs the workflow every 5 minutes.
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 permissions:
