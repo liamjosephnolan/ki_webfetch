@@ -30,10 +30,14 @@ if html_content:
     # Find the span with the class 'ki-entry-pct'
     ki_current_capacity = website_soup.find('span', class_='ki-entry-pct')
 
+
     # Extract the text and convert it to an integer if the element is found
     if ki_current_capacity:
-        ki_current_capacity = int(ki_current_capacity.get_text())
-        print("The extracted number is:", ki_current_capacity)
+        try:
+            ki_current_capacity = int(ki_current_capacity.get_text())
+            print("The extracted number is:", ki_current_capacity)
+        except:
+            ki_current_capacity = 0
     else:
         print("The element with class 'ki-entry-pct' was not found.")
         ki_current_capacity = 0
