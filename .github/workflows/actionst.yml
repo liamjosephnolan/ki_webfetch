@@ -30,8 +30,8 @@ jobs:
         
       - name: Configure Git
         run: |
-          git config --local user.email "liamjosephnolan@gmail.com"
-          git config --local user.name "liamjosephnolan"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
 
       - name: Commit and Push Changes
         run: |
