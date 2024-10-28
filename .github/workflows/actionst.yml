@@ -3,6 +3,7 @@ name: run webfetch.py
 on:
   schedule:
     - cron: '*/10 * * * *'  # This cron expression runs the workflow every 10 minutes.
+  workflow_dispatch:  # Allows manual triggering of the workflow      
     
 permissions:
   contents: write  # Allow write access to repository contents
