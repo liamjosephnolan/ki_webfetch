@@ -1,4 +1,3 @@
-from apscheduler.schedulers.blocking import BlockingSchedulerimport
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -62,10 +61,3 @@ print(f"Time taken to fetch and parse the content: {elapsed_time:.2f} seconds")
 
 
 
-# Create a scheduler
-scheduler = BlockingScheduler()
-# Schedule the fetch_data function to run every 10 minutes
-scheduler.add_job(fetch_data, 'interval', minutes=10)
-
-# Start the scheduler
-scheduler.start()
