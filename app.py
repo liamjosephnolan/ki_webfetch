@@ -1,7 +1,11 @@
 from flask import Flask, jsonify
 import pandas as pd
+from flask_cors import CORS  # Import CORSapp = Flask(__name__)
+
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
 
 @app.route('/api/average_capacity', methods=['GET'])
 def average_capacity():
