@@ -4,8 +4,7 @@ from flask_cors import CORS  # Import CORSapp = Flask(__name__)
 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
+CORS(app, resources={r"/api/*": {"origins": "https://liamjosephnolan.com"}})  # Modify "*" to your website URL if possible
 
 @app.route('/api/average_capacity', methods=['GET'])
 def average_capacity():
