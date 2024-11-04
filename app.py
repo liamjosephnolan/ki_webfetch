@@ -15,7 +15,7 @@ def average_capacity():
         df = pd.read_csv(csv_file)
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
         df['TimeOfDay'] = df['Timestamp'].dt.floor('15T').dt.time
-        start_time = pd.to_datetime("07:45").time()
+        start_time = pd.to_datetime("8:00").time()
         end_time = pd.to_datetime("21:00").time()
         df = df[(df['TimeOfDay'] >= start_time) & (df['TimeOfDay'] <= end_time)]
         average_capacity = df.groupby('TimeOfDay')['Capacity'].mean().reset_index()
