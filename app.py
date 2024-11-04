@@ -10,25 +10,42 @@ def average_capacity():
     # Path to your CSV file
     csv_file = 'ki_current_capacity_log.csv'
     
-    def calculate_average_capacity_by_day_of_week(csv_file):
+    def calculate_average_capacity_by_day_and_interval(csv_file):
         df = pd.read_csv(csv_file)
-        # Parse 'Timestamp' column as datetime
+        
+        # Convert the 'Timestamp' column to datetime and extract day of the week and time intervals
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
-        # Extract the day of the week and assign it as a new column
         df['DayOfWeek'] = df['Timestamp'].dt.day_name()
+        df['TimeOfDay'] = df['Timestamp'].dt.floor('15T').dt.time
+
+        # Filter data to be between 08:00 and 21:00
+        start_time = pd.to_datetime("08:00").time()
+        end_time = pd.to_datetime("21:00").time()
+        df = df[(df['TimeOfDay'] >= start_time) & (df['TimeOfDay'] <= end_time)]
+
+        # Group by DayOfWeek and TimeOfDay and calculate the mean Capacity
+        grouped = df.groupby(['DayOfWeek', 'TimeOfDay'])['Capacity'].mean().reset_index()
         
-        # Group by 'DayOfWeek' and calculate the average 'Capacity'
-        average_capacity = df.groupby('DayOfWeek')['Capacity'].mean().reset_index()
+        # Convert the DataFrame to a nested dictionary format
+        result = []
+        for day in grouped['DayOfWeek'].unique():
+            day_data = grouped[grouped['DayOfWeek'] == day]
+            day_entry = {
+                "DayOfWeek": day,
+                "Data": [
+                    {
+                        "TimeOfDay": time.strftime('%H:%M'),  # Format time as HH:MM
+                        "Capacity": round(capacity, 2)  # Optional: round to 2 decimal places
+                    }
+                    for time, capacity in zip(day_data['TimeOfDay'], day_data['Capacity'])
+                ]
+            }
+            result.append(day_entry)
         
-        # Sort days of the week for logical ordering
-        day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        average_capacity['DayOfWeek'] = pd.Categorical(average_capacity['DayOfWeek'], categories=day_order, ordered=True)
-        average_capacity = average_capacity.sort_values('DayOfWeek')
-        
-        # Convert to list of dictionaries for JSON response
-        return average_capacity.to_dict(orient='records')
+        return result
     
-    averages = calculate_average_capacity_by_day_of_week(csv_file)
+    # Generate the JSON structure and send it as a response
+    averages = calculate_average_capacity_by_day_and_interval(csv_file)
     return jsonify(averages)
 
 if __name__ == '__main__':
