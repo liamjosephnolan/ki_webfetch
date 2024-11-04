@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 import pandas as pd
-from flask_cors import CORS  # Import CORSapp = Flask(__name__)
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
@@ -11,18 +10,25 @@ def average_capacity():
     # Path to your CSV file
     csv_file = 'ki_current_capacity_log.csv'
     
-    def calculate_average_capacity_by_interval(csv_file):
+    def calculate_average_capacity_by_day_of_week(csv_file):
         df = pd.read_csv(csv_file)
+        # Parse 'Timestamp' column as datetime
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
-        df['TimeOfDay'] = df['Timestamp'].dt.floor('15T').dt.time
-        start_time = pd.to_datetime("8:00").time()
-        end_time = pd.to_datetime("21:00").time()
-        df = df[(df['TimeOfDay'] >= start_time) & (df['TimeOfDay'] <= end_time)]
-        average_capacity = df.groupby('TimeOfDay')['Capacity'].mean().reset_index()
-        average_capacity['TimeOfDay'] = average_capacity['TimeOfDay'].astype(str)
+        # Extract the day of the week and assign it as a new column
+        df['DayOfWeek'] = df['Timestamp'].dt.day_name()
+        
+        # Group by 'DayOfWeek' and calculate the average 'Capacity'
+        average_capacity = df.groupby('DayOfWeek')['Capacity'].mean().reset_index()
+        
+        # Sort days of the week for logical ordering
+        day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        average_capacity['DayOfWeek'] = pd.Categorical(average_capacity['DayOfWeek'], categories=day_order, ordered=True)
+        average_capacity = average_capacity.sort_values('DayOfWeek')
+        
+        # Convert to list of dictionaries for JSON response
         return average_capacity.to_dict(orient='records')
     
-    averages = calculate_average_capacity_by_interval(csv_file)
+    averages = calculate_average_capacity_by_day_of_week(csv_file)
     return jsonify(averages)
 
 if __name__ == '__main__':
