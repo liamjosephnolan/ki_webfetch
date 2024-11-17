@@ -6,7 +6,6 @@ import os
 from datetime import datetime 
 
 
-
 def get_weather_description(weather_code):
 # Dictionary mapping weather codes to descriptions
     weather_descriptions = {
@@ -48,15 +47,23 @@ def get_weather_description(weather_code):
 # URL of the page to scrape
 url = 'https://www.kletterzentrum-innsbruck.at/'
 
+
+
+# Weather data code
+
+try: # Blanket try case
 # Url for weather in Innsbruck 
-weather_url = 'https://api.open-meteo.com/v1/forecast?latitude=47.27001&longitude=11.39577&current_weather=true'
-weather_response = requests.get(weather_url)  # Get response from Open Meteo API
-current_weather_data = weather_response.json()  # Convert the response to JSON
+    weather_url = 'https://api.open-meteo.com/v1/forecast?latitude=47.27001&longitude=11.39577&current_weather=true'
+    weather_response = requests.get(weather_url)  # Get response from Open Meteo API
+    current_weather_data = weather_response.json()  # Convert the response to JSON
 
 # Parse weather data from Open Meteo's response
-current_temp = current_weather_data['current_weather']['temperature']
-weather_code = current_weather_data['current_weather']['weathercode']
-current_weather_type = get_weather_description(weather_code)
+    current_temp = current_weather_data['current_weather']['temperature']
+    weather_code = current_weather_data['current_weather']['weathercode']
+    current_weather_type = get_weather_description(weather_code)
+except:
+    current_weather_type = None
+    current_temp = None
 
 # Fetch the webpage content
 response = requests.get(url)
