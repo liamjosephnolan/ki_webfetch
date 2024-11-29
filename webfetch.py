@@ -47,7 +47,7 @@ def get_weather_description(weather_code):
 # URL of the page to scrape
 url = 'https://www.kletterzentrum-innsbruck.at/'
 
-
+requests.get('https://ki-webfetch.onrender.com/api/average_capacity') #Only have this to keep my render service online
 
 # Weather data code
 
