@@ -1,27 +1,12 @@
-name: Run Webfetch Script
+name: run webfetch.py
 
 on:
   schedule:
-    - cron: '*/10 7-21 * * *'  # Runs every 10 minutes between 7 AM and 9 PM
-  workflow_dispatch:  # Allows manual triggering
-    inputs:
-      environment:
-        description: 'Environment to run in'
-        required: false
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
-          - testing
-      dry-run:
-        description: 'Run without making changes'
-        required: false
-        default: 'false'
-        type: boolean
-
+    - cron: '*/10 7-21 * * *'  # This cron expression runs the workflow every 10 minutes.
+  workflow_dispatch:  # Allows manual triggering of the workflow      
+    
 permissions:
-  contents: write
+  contents: write  # Allow write access to repository contents
 
 jobs:
   run-script:
@@ -29,37 +14,28 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Set Up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v4  # Updated to v4
         with:
-          python-version: '3.9'
+          python-version: '3.9'  # Specify the Python version
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt  # Ensure you have a requirements.txt
 
       - name: Run Script
-        run: |
-          echo "Running in ${{ github.event.inputs.environment }} environment"
-          if [ "${{ github.event.inputs.dry-run }}" == "true" ]; then
-            echo "Dry run mode enabled - no changes will be made"
-            python webfetch.py --dry-run
-          else
-            python webfetch.py
-          fi
-
+        run: python webfetch.py  
+        
       - name: Configure Git
-        if: ${{ github.event.inputs.dry-run != 'true' }}
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
       - name: Commit and Push Changes
-        if: ${{ github.event.inputs.dry-run != 'true' }}
         run: |
-          git add ki_current_capacity_log.csv
-          git diff-index --quiet HEAD || git commit -m "Update CSV with new capacity data [skip ci]"
-          git push origin main
+          git add ki_current_capacity_log.csv  
+          git commit -m "Update CSV with new capacity data" || echo "No changes to commit"
+          git push origin master  # Make sure you push to the correct branch
